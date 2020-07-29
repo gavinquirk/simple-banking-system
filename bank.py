@@ -6,6 +6,10 @@ class Account:
         # Generate PIN number
         self.pin = random.randint(10**(4-1), (10**4)-1)
         # Generate card number
+        self.iin = 400000
+        self.can = random.randint(10**(16-1), (10**16)-1)
+        self.checksum = 1  # Will need to generate later using Luhn algo
+        self.card_num = int(str(self.iin) + str(self.can) + str(self.checksum))
 
 
 # Present user with menu
@@ -18,3 +22,11 @@ while True:
     if user_input == "0":
         print("Bye!")
         break
+    elif user_input == "1":
+        new_card = Account()
+
+        print("Your card has been created")
+        print("Your card number:")
+        print(new_card.card_num)
+        print("Your card PIN:")
+        print(new_card.pin)
