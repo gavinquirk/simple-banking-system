@@ -1,15 +1,13 @@
 import random
 
-# All cards which have been created
+# Global Vars
 current_account = None
 all_accounts = {}
 
 
 class Account:
     def __init__(self):
-        # Generate PIN number
         self.pin = gen_rand_number_given_size(4)
-        # Generate card number
         self.iin = 400000
         self.can = gen_rand_number_given_size(9)
         self.checksum = 1  # Will need to generate later using Luhn algo
@@ -18,8 +16,10 @@ class Account:
         all_accounts.update({self.card_num: self})
 
 
-def gen_rand_number_given_size(digit_size):
-    return int(''.join(['{}'.format(random.randint(0, 9)) for num in range(0, digit_size)]))
+def gen_rand_number_given_size(n):
+    range_start = 10**(n-1)
+    range_end = (10**n)-1
+    return random.randint(range_start, range_end)
 
 
 def log_in(card_num, pin):
