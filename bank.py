@@ -23,7 +23,7 @@ def gen_rand_number_given_size(n):
 
 
 def log_in(card_num, pin):
-    if all_accounts[card_num].pin == pin:
+    if card_num in all_accounts and all_accounts[card_num].pin == pin:
         global current_account
         current_account = all_accounts[card_num]
         print('You have successfully logged in!')
