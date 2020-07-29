@@ -1,5 +1,9 @@
 import random
 
+# All cards which have been created
+all_cards = {}
+current_account = 'none'
+
 
 class Account:
     def __init__(self):
@@ -10,23 +14,31 @@ class Account:
         self.can = random.randint(10**(16-1), (10**16)-1)
         self.checksum = 1  # Will need to generate later using Luhn algo
         self.card_num = int(str(self.iin) + str(self.can) + str(self.checksum))
+        all_cards.update({self.card_num: self.pin})
 
-
-# Present user with menu
-print('1. Create an account')
-print('2. Log into account')
-print('0. Exit')
 
 while True:
+    # Present user with menu
+    if current_account == 'none':
+        print('1. Create an account')
+        print('2. Log into account')
+        print('0. Exit')
+    else:
+        print('1. Balance')
+        print('2. Log out')
+        print('0. Exit')
+
     user_input = input()
+    # Exit condition
     if user_input == "0":
         print("Bye!")
         break
-    elif user_input == "1":
-        new_card = Account()
-
+    # Create account condition
+    elif user_input == "1" and current_account == 'none':
+        new_account = Account()
+        current_account = new_account.card_num
         print("Your card has been created")
         print("Your card number:")
-        print(new_card.card_num)
+        print(new_account.card_num)
         print("Your card PIN:")
-        print(new_card.pin)
+        print(new_account.pin)
