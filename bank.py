@@ -10,10 +10,47 @@ class Account:
         self.pin = gen_rand_number_given_size(4)
         self.iin = 400000
         self.can = gen_rand_number_given_size(9)
-        self.checksum = 1  # Will need to generate later using Luhn algo
+        self.checksum = generate_checksum(self.iin, self.can)
         self.card_num = int(str(self.iin) + str(self.can) + str(self.checksum))
         self.balance = 0
         all_accounts.update({self.card_num: self})
+
+
+def generate_checksum(iin, can):
+    # Get list of nums
+    partial_card = int(str(iin) + str(can))
+    partial_list = [int(i) for i in str(partial_card)]
+    # Reverse order
+    partial_reversed = partial_list[::-1]
+    partial_doubled = []
+    partial_added = []
+    counter = 0
+
+    # Double every second digit
+    for num in partial_reversed:
+        if (counter % 2 == 0):
+            num = num * 2
+            partial_doubled.append(num)
+            counter += 1
+        else:
+            partial_doubled.append(num)
+            counter += 1
+
+    # If digit is more than 9, add the digits together
+    for num in partial_doubled:
+        if num > 9:
+            num1 = [int(d) for d in str(num)][0]
+            num2 = [int(d) for d in str(num)][1]
+            new_num = num1 + num2
+            partial_added.append(new_num)
+        else:
+            partial_added.append(num)
+
+    # Add all numbers together
+    total = sum(partial_added)
+    multiplied = total * 9
+    check_digit = multiplied % 10
+    return check_digit
 
 
 def gen_rand_number_given_size(n):
