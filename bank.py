@@ -1,4 +1,5 @@
 import random
+import sqlite3
 
 # Global Vars
 current_account = None
@@ -106,3 +107,18 @@ while True:
     # Check balance condition
     elif user_input == '1' and current_account != None:
         print('Balance: ' + str(current_account.balance))
+
+# Database Connection
+conn = sqlite3.connect('card.s3db')
+cur = conn.cursor()
+
+# Create Database
+cur.execute("""CREATE TABLE card (
+        id INT
+        number TEXT
+        pin TEXT
+        balance INTEGER DEFAULT 0
+    )
+""")
+
+conn.commit()
