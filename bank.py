@@ -97,7 +97,10 @@ while True:
         print('0. Exit')
     else:
         print('1. Balance')
-        print('2. Log out')
+        print('2. Add Income')
+        print('3. Do transfer')
+        print('4. Close account')
+        print('5. Log out')
         print('0. Exit')
 
     user_input = input()
@@ -120,13 +123,26 @@ while True:
         print('Enter your PIN:')
         pin = int(input())
         log_in(card_num, pin)
-    # Log out condition
-    elif user_input == '2' and current_account != None:
-        current_account = None
-        print('You have successfully logged out!')
     # Check balance condition
     elif user_input == '1' and current_account != None:
-        print('Balance: ' + str(current_account.balance))
+        # Query DB for account balance
+        cur.execute(
+            """SELECT balance FROM card WHERE number={0}""".format(current_account))
+        result = cur.fetchone()
+        print('Balance: ' + str(result[0]))
+    # Add Income condition
+    elif user_input == '2' and current_account != None:
+        print('Enter income:')
+        income = input()
+        cur.execute("""UPDATE card SET balance={0} WHERE number={1}""".format(
+            income, current_account))
+        print('Income was added!')
+    # Do transfer condition
+    # Close account condition
+    # Log out condition
+    elif user_input == '5' and current_account != None:
+        current_account = None
+        print('You have successfully logged out!')
 
 
 # Commit db changes
