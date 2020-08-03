@@ -69,6 +69,17 @@ def generate_checksum(iin, can):
     return check_digit
 
 
+def validate_checksum(card_number):
+    iin = 400000
+    can = int(card_number[6:15])
+    check_digit = int(card_number[-1])
+    generated_check_digit = generate_checksum(iin, can)
+    if check_digit == generated_check_digit:
+        return True
+    else:
+        return False
+
+
 def gen_rand_number_given_size(n):
     range_start = 10**(n-1)
     range_end = (10**n)-1
@@ -136,8 +147,17 @@ while True:
         income = input()
         cur.execute("""UPDATE card SET balance={0} WHERE number={1}""".format(
             income, current_account))
+        conn.commit()
         print('Income was added!')
     # Do transfer condition
+    elif user_input == '3' and current_account != None:
+        print('Transfer')
+        print('Enter card number:')
+        target_number = input()
+        # If target number does not pass Lunh algo, tell user there is a mistake in card num
+        if not validate_checksum(target_number):
+            print("Probably you made mistake in the card number. Please try again!")
+
     # Close account condition
     # Log out condition
     elif user_input == '5' and current_account != None:
