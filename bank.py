@@ -157,6 +157,9 @@ while True:
         # If target number does not pass Lunh algo, tell user there is a mistake in card num
         if not validate_checksum(target_number):
             print("Probably you made mistake in the card number. Please try again!")
+        # If target number is same as current account number
+        elif int(target_number) == current_account:
+            print("You can't transfer money to the same account!")
 
     # Close account condition
     # Log out condition
