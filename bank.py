@@ -3,7 +3,20 @@ import sqlite3
 
 # Global Vars
 current_account = None
-all_accounts = {}
+
+# Database Connection
+conn = sqlite3.connect('card.s3db')
+cur = conn.cursor()
+
+# Create database if it doesn't already exist
+cur.execute("""CREATE TABLE IF NOT EXISTS card (
+        id INTEGER,
+        number TEXT,
+        pin TEXT,
+        balance INTEGER DEFAULT 0
+    );
+""")
+conn.commit()
 
 
 class Account:
@@ -14,7 +27,9 @@ class Account:
         self.checksum = generate_checksum(self.iin, self.can)
         self.card_num = int(str(self.iin) + str(self.can) + str(self.checksum))
         self.balance = 0
-        all_accounts.update({self.card_num: self})
+        cur.execute("INSERT INTO card (number, pin) VALUES ('{0}', '{1}')".format(
+            str(self.card_num), str(self.pin)))
+        conn.commit()
 
 
 def generate_checksum(iin, can):
@@ -61,12 +76,17 @@ def gen_rand_number_given_size(n):
 
 
 def log_in(card_num, pin):
-    if card_num in all_accounts and all_accounts[card_num].pin == pin:
-        global current_account
-        current_account = all_accounts[card_num]
-        print('You have successfully logged in!')
-    else:
+    # Get card info from db
+    cur.execute("""SELECT number, pin FROM card WHERE number={0} AND pin={1}""".format(
+        card_num, pin))
+    result = cur.fetchone()
+    # If no result exists (returns None), tell user. If result does exist, log in
+    if result == None:
         print('Wrong card number or PIN!')
+    else:
+        global current_account
+        current_account = card_num
+        print('You have successfully logged in!')
 
 
 while True:
@@ -108,17 +128,6 @@ while True:
     elif user_input == '1' and current_account != None:
         print('Balance: ' + str(current_account.balance))
 
-# Database Connection
-conn = sqlite3.connect('card.s3db')
-cur = conn.cursor()
 
-# Create Database
-cur.execute("""CREATE TABLE card (
-        id INT
-        number TEXT
-        pin TEXT
-        balance INTEGER DEFAULT 0
-    )
-""")
-
+# Commit db changes
 conn.commit()
