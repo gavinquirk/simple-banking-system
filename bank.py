@@ -144,9 +144,13 @@ while True:
     # Add Income condition
     elif user_input == '2' and current_account != None:
         print('Enter income:')
-        income = input()
+        income = int(input())
+        cur.execute(
+            """SELECT balance FROM card WHERE number={0}""".format(current_account))
+        current_balance = cur.fetchone()[0]
+        new_balance = current_balance + income
         cur.execute("""UPDATE card SET balance={0} WHERE number={1}""".format(
-            income, current_account))
+            new_balance, current_account))
         conn.commit()
         print('Income was added!')
     # Do transfer condition
