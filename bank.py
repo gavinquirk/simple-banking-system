@@ -151,15 +151,27 @@ while True:
         print('Income was added!')
     # Do transfer condition
     elif user_input == '3' and current_account != None:
+        cur.execute(
+            """SELECT balance FROM card WHERE number={0}""".format(current_account))
+        current_balance = cur.fetchone()[0]
         print('Transfer')
         print('Enter card number:')
         target_number = input()
-        # If target number does not pass Lunh algo, tell user there is a mistake in card num
+        # If target number does not pass Lunh algo,
+        # tell user there is a mistake in card num
         if not validate_checksum(target_number):
             print("Probably you made mistake in the card number. Please try again!")
         # If target number is same as current account number
         elif int(target_number) == current_account:
             print("You can't transfer money to the same account!")
+
+        # Get amount to transfer
+        print('Enter how much money you want to transfer:')
+        target_amount = int(input())
+        # If user tries to transfer more money than they have,
+        # print warning message.
+        if target_amount > current_balance:
+            print('Not enough money!')
 
     # Close account condition
     # Log out condition
