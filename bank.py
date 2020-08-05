@@ -164,14 +164,23 @@ while True:
         # If target number is same as current account number
         elif int(target_number) == current_account:
             print("You can't transfer money to the same account!")
-
-        # Get amount to transfer
-        print('Enter how much money you want to transfer:')
-        target_amount = int(input())
-        # If user tries to transfer more money than they have,
-        # print warning message.
-        if target_amount > current_balance:
-            print('Not enough money!')
+        # Check if target card exists in db
+        else:
+            cur.execute(
+                """SELECT number FROM card WHERE number={}""".format(
+                    target_number)
+            )
+            result = cur.fetchone()[0]
+            if result == None:
+                print('Such a card does not exist.')
+            else:
+                # Get amount to transfer
+                print('Enter how much money you want to transfer:')
+                target_amount = int(input())
+                # If user tries to transfer more money than they have,
+                # print warning message.
+                if target_amount > current_balance:
+                    print('Not enough money!')
 
     # Close account condition
     # Log out condition
