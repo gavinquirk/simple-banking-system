@@ -181,13 +181,27 @@ while True:
                 # print warning message.
                 if target_amount > current_balance:
                     print('Not enough money!')
-
-    # Close account condition
-    # Log out condition
+                else:
+                    # Remove target ammount from current account, add target ammount to target account
+                    new_current_balance = current_balance - target_amount
+                    cur.execute(
+                        """UPDATE card SET balance = {0} WHERE number = {1}""".format(
+                            new_current_balance, current_account)
+                    )
+                    # Get target card balance
+                    cur.execute(
+                        """SELECT balance FROM card WHERE number = {0}""".format(
+                            target_number)
+                    )
+                    target_balance = cur.fetchone()[0]
+                    new_target_balance = target_balance + target_amount
+                    cur.execute(
+                        """UPDATE card SET balance = {0} WHERE number = {1}""".format(
+                            new_target_balance, target_number)
+                    )
+                    conn.commit()
+                    # Close account condition
+                    # Log out condition
     elif user_input == '5' and current_account != None:
         current_account = None
         print('You have successfully logged out!')
-
-
-# Commit db changes
-conn.commit()
