@@ -200,8 +200,15 @@ while True:
                             new_target_balance, target_number)
                     )
                     conn.commit()
-                    # Close account condition
-                    # Log out condition
+    # Close account condition
+    elif user_input == '4' and current_account != None:
+        cur.execute(
+            """DELETE FROM card WHERE number = {0}""".format(current_account)
+        )
+        conn.commit()
+        current_account = None
+        print('The account has been closed!')
+    # Log out condition
     elif user_input == '5' and current_account != None:
         current_account = None
         print('You have successfully logged out!')
